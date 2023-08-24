@@ -3,20 +3,45 @@
 <div class="card shadow mt-5 mx-auto text-light text-center" style="width: 18rem;">
   <div class="card-header fs-3" style="background-color: DarkOliveGreen;">Login</div>
   <div class="card-body">
-    <form class="text-dark">
-    <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Email</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-    </div>
-    <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1">
-    </div>
-        <button type="submit" class="btn bg-dark bg-gradient text-white bg-opacity-75 w-100">Login</button>
+    <form id="form-login" class="text-dark">
+      <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+      </div>
+      <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" required>
+      </div>
+      <button type="submit" class="btn bg-dark bg-gradient text-white bg-opacity-75 w-100">Login</button>
     </form>
   </div>
 </div>
 
 <script>
-    //TODO: login
+        //1. Obtener las variables
+    const form = document.querySelector('#form-login'); 
+    const email = document.querySelector('#email'); 
+    const password = document.querySelector('#password'); 
+
+    //2. Reaccionar al envío del formulario
+    form.addEventListener('submit', async (e) => { 
+        e.preventDefault(); 
+        //2.2. Mandamos la solicitud al servidor
+        let response;
+        try{
+            response = await axios.post('/api/users/login', {
+                email: email.value, 
+                password: password.value})  
+        } catch (error) {
+            console.log(error.response.data.error)
+            toastr.error(error.response.data.error, "Error al iniciar sesión:")
+            return
+        }
+
+        //3. Guardamos el token que nos retorna el servidor en el localStorage
+        localStorage.setItem('token', response.data);
+
+        //4. Redirijo a la pag principal
+        window.location.href = '/session'
+    })
 </script>

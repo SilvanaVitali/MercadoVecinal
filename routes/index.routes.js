@@ -5,6 +5,10 @@ router.get('/', (req, res) => {
     res.render('home')
 });
 
+router.get('/session', (req, res) => {
+    res.render('session')
+});
+
 router.get('/login', (req, res) => {
     res.render('login')
 });

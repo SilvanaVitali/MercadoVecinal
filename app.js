@@ -4,9 +4,9 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 const dotenv = require('dotenv').config();
 const PORT = 3000;
-const User = require('./models/index.model')
 
 const indexRouter = require('./routes/index.routes.js');
+const usersRouter = require('./routes/user.routes.js');
 //TODO: importar las rutas
 
 //Config de handlebars
@@ -20,11 +20,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'node_modules/axios/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
-// app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
-// app.use(express.static(path.join(__dirname, 'node_modules/toastr/build')));
+app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use(express.static(path.join(__dirname, 'node_modules/toastr/build')));
 
 //TODO: RUTAS
 // app.use('/', rutas);
 app.use('/', indexRouter);
+app.use('/api/users', usersRouter);
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));

@@ -16,8 +16,11 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
+    "jquery": "^3.7.0",
+    "jquey": "0.0.1-security",
     "jsonwebtoken": "^9.0.1",
     "pg": "^8.11.3",
-    "sequelize": "^6.32.1"
+    "sequelize": "^6.32.1",
+    "toastr": "^2.1.4"
   }
 }

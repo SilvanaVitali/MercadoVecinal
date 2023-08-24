@@ -23,6 +23,12 @@ dependencies:
   express-handlebars:
     specifier: ^7.1.2
     version: 7.1.2
+  jquery:
+    specifier: ^3.7.0
+    version: 3.7.0
+  jquey:
+    specifier: 0.0.1-security
+    version: 0.0.1-security
   jsonwebtoken:
     specifier: ^9.0.1
     version: 9.0.1
@@ -32,6 +38,9 @@ dependencies:
   sequelize:
     specifier: ^6.32.1
     version: 6.32.1(pg@8.11.3)
+  toastr:
+    specifier: ^2.1.4
+    version: 2.1.4
 
 packages:
 
@@ -670,6 +679,14 @@ packages:
       '@pkgjs/parseargs': 0.11.0
     dev: false
 
+  /jquery@3.7.0:
+    resolution: {integrity: sha512-umpJ0/k8X0MvD1ds0P9SfowREz2LenHsQaxSohMZ5OMNEU2r0tf8pdeEFTHMFxWVxKNyU9rTtK3CWzUCTKJUeQ==}
+    dev: false
+
+  /jquey@0.0.1-security:
+    resolution: {integrity: sha512-VFbXpLat/1mGSeNrVxbWJ3XftyaV8jccwOYnbUSoXJipj2wftpUC1F+vxLJke9R9CdlMOyPUUms16oJ42ivoIA==}
+    dev: false
+
   /jsonwebtoken@9.0.1:
     resolution: {integrity: sha512-K8wx7eJ5TPvEjuiVSkv167EVboBDv9PZdDoF7BgeQnBLVvZWW9clr2PsQHVJDTKaEIH5JBIwHujGcHp7GgI2eg==}
     engines: {node: '>=12', npm: '>=6'}
@@ -1268,6 +1285,12 @@ packages:
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
+    dev: false
+
+  /toastr@2.1.4:
+    resolution: {integrity: sha512-LIy77F5n+sz4tefMmFOntcJ6HL0Fv3k1TDnNmFZ0bU/GcvIIfy6eG2v7zQmMiYgaalAiUv75ttFrPn5s0gyqlA==}
+    dependencies:
+      jquery: 3.7.0
     dev: false
 
   /toidentifier@1.0.1:
