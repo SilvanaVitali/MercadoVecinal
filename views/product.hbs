@@ -1,51 +1,26 @@
 {{> navbar_inside}}
 
-<div class="card shadow m-4 text-light">
+<div class="card shadow m-4 text-light col-md-10 mx-auto">
   <div class="card-header fs-3 text" style="background-color: DarkOliveGreen;">Nombre producto</div>
   <div class="card-body">
 
-    <form class="row g-3 text-dark">
-    <div class="col-md-6">
-        <img src="https://s2.ppllstatics.com/diariosur/www/multimedia/201803/08/media/cortadas/122427314--624x492.jpg" class="img-fluid" alt="...">
-    </div>
-    <div class="col-md-6 d-flex align-items-center">
-        <div class="border rounded p-4 w-100">
-            <p class="fs-5">Nombre producto</p>
-            <p class="fs-5">$3200</p>
-            <p class="fs-5">Stock Disponible: </p>
-            <div class="row g-3 align-items-center">
-                <div class="col-auto">
-                    <label for="input6" class="col-form-label">Cantidad</label>
-                </div>
-                <div class="col-auto">
-                    <input type="number" id="input6" class="form-control">
-                </div>
-            </div>
-            <button type="button" class="btn bg-dark bg-gradient text-white bg-opacity-75 w-100 mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Reservar</button>
-        </div>
-
-    </div>
-    <div class="col-12">
-        <h5>Descripción</h5>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Inventore minima fuga, delectus sint perspiciatis nam tempora ipsa eius cumque aperiam quos tempore saepe accusamus repellat, distinctio dolores ab. Vel, et?</p>
-    </div>
-    </form>
+    <form id="form-product" class="row g-5 text-dark px-5"></form>
         
   </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmar Reserva</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="modalBody">
         <p>¿Estás seguro que quieres confirmar tu reserva?</p>
-        <p>Producto: xxxx</p>
-        <p>Cantidad a reservar: xx</p>
+        <p id="product">Producto:</p>
+        <p id="amountTo">Cantidad a reservar:</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -56,5 +31,74 @@
 </div>
 
 <script>
-    //TODO mostrar producto y personalizar modal
+    const token = localStorage.getItem('token');
+    const formProduct = document.querySelector('#form-product');
+
+    let product = document.querySelector('#amount');
+    let amountTo = document.querySelector('#amountTo');
+
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const id = urlSearchParams.get("id");
+
+    async function getProduct () {
+        try {
+        const { data } = await axios.get(`/api/posts/product/${id}`, { 
+        headers: { 
+            authorization: token 
+            } 
+        });
+
+        let img;
+        if(data.photo) {
+            img = '/fotos/' + data.photo
+        } else {
+            img = '/fotos/default.png'
+        }
+        let content = `
+            <div class="col-md-5">
+                <img src="${img}" class="img-fluid" alt="${data.product}">
+            </div>
+            <div class="col-md-7 d-flex align-items-center">
+                <div class="border rounded p-4 w-100">
+                    <p class="fs-3 fw-bold">${data.product}</p>
+                    <p class="fs-4 fw-bold">$${data.price}</p>
+                    <p class="fs-5 fw-bold">Stock Disponible: ${data.availableStock}</p>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="amount" class="col-form-label">Cantidad</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="number" id="amount" value="0" class="form-control">
+                        </div>
+                    </div>
+                    <button type="button" class="btn bg-dark bg-gradient text-white bg-opacity-75 w-100 mt-3" id="btn-modal" name="${data.postID}">Reservar</button>
+                </div>
+            </div>
+            <div class="col-12">
+                <h5>Descripción</h5>
+                <p>${data.description}</p>
+            </div>
+        `
+        formProduct.innerHTML = content;
+
+        const amount = document.querySelector('#amount');
+        const btnModal = document.querySelector('#btn-modal');
+        
+        btnModal.addEventListener('click', () => {
+          const myModal = new bootstrap.Modal(document.getElementById('myModal'),)
+        document.getElementById("modalBody").innerHTML = `
+                <p>¿Estás seguro que quieres confirmar tu reserva?</p>
+            <p id="product">Producto: ${data.product}</p>
+            <p id="amountTo">Cantidad a reservar: ${amount.value}</p>
+        `
+        myModal.show();
+        })
+
+      } catch (error) {
+        console.log(error)
+        toastr.error(error.response, "Error de inicio session:");
+      }
+    }
+
+    getProduct();
 </script>

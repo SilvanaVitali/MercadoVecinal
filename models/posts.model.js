@@ -22,7 +22,7 @@ const Post = db.define('post', {
         allowNull: false,
         validate: {
             len: {
-                args: [2, 50],
+                args: [0, 50],
                 msg: 'El largo de la foto debe medir entre 2 y 50 caracteres'
             }
         }

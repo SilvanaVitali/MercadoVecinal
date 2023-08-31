@@ -4,31 +4,31 @@
   <div class="card-header fs-3 text" style="background-color: DarkOliveGreen;">Publicar</div>
   <div class="card-body">
 
-    <form class="row g-3 text-dark">
+    <form id="form-post" class="row g-3 text-dark">
     <div class="col-md-6">
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Nombre Producto</span>
-            <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+            <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" id="product">
         </div>
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Precio</span>
-            <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon2">Precio</span>
+            <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon2" id="price">
         </div>
     </div>
     <div class="col-md-6">
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Foto</span>
-            <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon3">Foto</span>
+            <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon3" id="photo">
         </div>
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Cantidad</span>
-            <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon4">Cantidad</span>
+            <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon4" id="initialStock">
         </div>
     </div>
     <div class="col-12">
         <div class="input-group">
             <span class="input-group-text">Descripcion</span>
-            <textarea class="form-control" aria-label="With textarea"></textarea>
+            <textarea class="form-control" aria-label="With textarea" id="description"></textarea>
         </div>
     </div>
     <div class="col-12">
@@ -40,5 +40,50 @@
 </div>
 
 <script>
-    //TODO
+    async function init() { 
+        //1. Obtener las variables
+        const form = document.querySelector('#form-post');
+        const product = document.querySelector('#product');
+        const price = document.querySelector('#price');
+        const photo = document.querySelector('#photo');
+        const initialStock = document.querySelector('#initialStock');
+        const description = document.querySelector('#description');
+        const token = localStorage.getItem('token');
+        
+        // 2. Voy a buscar mis datos
+        const {data} = await axios.get('/api/users/my', { 
+            headers: { 
+                authorization: token 
+                } 
+            });
+
+        const userId = data.id;
+        //2. Reaccionar al envio el formulario */
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+        //2. Mandamos la solicitud al servidor
+            let response;
+            try {
+            response = await axios.post('/api/posts/post', {
+                product: product.value,
+                price : price.value ,
+                photo: photo.value,
+                initialStock: initialStock.value,
+                availableStock: initialStock.value,
+                description: description.value,
+                sellerID: userId
+            });
+            toastr.success("Producto agregado con exito!");
+            form.reset();
+            } catch(error) {
+                console.log(error);
+                toastr.error(error);
+                return
+            };
+        });
+    };
+
+    init();
+
 </script>

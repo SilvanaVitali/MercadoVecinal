@@ -1,82 +1,52 @@
 {{> navbar_inside}}
 <h1 class="text-center mt-4">Lista de productos</h1>
 
-<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-5 p-5">
-
-  <div class="col">
-    <div class="card text-center h-100 shadow">
-    <img src="https://s2.ppllstatics.com/diariosur/www/multimedia/201803/08/media/cortadas/122427314--624x492.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <h6 class="card-title">$990</h6>
-        <a href="#" class="btn bg-primary bg-gradient text-white bg-opacity-75">Go somewhere</a>
-    </div>
-    </div>
-  </div>
-
-  <div class="col">
-    <div class="card text-center h-100 shadow">
-    <img src="https://s2.ppllstatics.com/diariosur/www/multimedia/201803/08/media/cortadas/122427314--624x492.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <h6 class="card-title">$990</h6>
-        <a href="#" class="btn bg-primary bg-gradient text-white bg-opacity-75">Go somewhere</a>
-    </div>
-    </div>
-  </div>
-
-  <div class="col">
-    <div class="card text-center h-100 shadow">
-    <img src="https://s2.ppllstatics.com/diariosur/www/multimedia/201803/08/media/cortadas/122427314--624x492.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <h6 class="card-title">$990</h6>
-        <a href="#" class="btn bg-primary bg-gradient text-white bg-opacity-75">Go somewhere</a>
-    </div>
-    </div>
-  </div>
-
-    <div class="col">
-    <div class="card text-center h-100 shadow">
-    <img src="https://s2.ppllstatics.com/diariosur/www/multimedia/201803/08/media/cortadas/122427314--624x492.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <h6 class="card-title">$990</h6>
-        <a href="#" class="btn bg-primary bg-gradient text-white bg-opacity-75">Go somewhere</a>
-    </div>
-    </div>
-  </div>
-
-  <div class="col">
-    <div class="card text-center h-100 shadow">
-    <img src="https://s2.ppllstatics.com/diariosur/www/multimedia/201803/08/media/cortadas/122427314--624x492.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <h6 class="card-title">$990</h6>
-        <a href="#" class="btn bg-primary bg-gradient text-white bg-opacity-75">Go somewhere</a>
-    </div>
-    </div>
-  </div>
-
-  <div class="col">
-    <div class="card text-center h-100 shadow">
-    <img src="https://s2.ppllstatics.com/diariosur/www/multimedia/201803/08/media/cortadas/122427314--624x492.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <h6 class="card-title">$990</h6>
-        <a href="#" class="btn bg-primary bg-gradient text-white bg-opacity-75">Go somewhere</a>
-    </div>
-    </div>
-  </div>
-  
-</div>
+<div id="product-list" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-5 p-5"></div>
 
 <script>
-    //TODO: completar cards
+    const productList = document.querySelector('#product-list');
+    const token = localStorage.getItem('token');
+
+    async function getProducts () {
+      try {
+        const { data } = await axios.get('/api/posts/session', { 
+        headers: { 
+            authorization: token 
+            } 
+        });
+        let productsStr = '';
+        for (let product of data) {
+          let img;
+          if(product.photo) {
+              img = '/fotos/' + product.photo
+          } else {
+              img = '/fotos/default.png'
+          }
+          productsStr += `
+            <div class="col">
+              <div class="card text-center h-100 shadow">
+                <img src="${img}" class="card-img-top" alt="${product.product}">
+                <div class="card-body">
+                    <h5 class="card-title">${product.product}</h5>
+                    <p class="card-text">${product.description}</p>
+                    <h6 class="card-title">$${product.price}</h6>
+                    <a href="#" class="btn bg-primary bg-gradient text-white bg-opacity-75" name="${product.postID}" onclick="reserve()">Reservar</a>
+                </div>
+              </div>
+            </div>
+          `
+        }
+        productList.innerHTML = productsStr;
+      } catch (error) {
+        console.log(error)
+        toastr.error(error.response.data, "Error de inicio session:");
+      }
+    }
+
+    async function reserve(){
+      let id = event.target.name;
+      window.location.href = `/product/search?id=${id}`
+    }
+
+    getProducts();
 </script>

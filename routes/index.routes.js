@@ -25,11 +25,11 @@ router.get('/myposts', (req, res) => {
     res.render('myposts')
 });
 
-router.get('/product', (req, res) => {
+router.get('/product/search', (req, res) => {
     res.render('product')
 });
 
-router.get('/editpost', (req, res) => {
+router.get('/editpost/search', (req, res) => {
     res.render('editpost')
 });
 

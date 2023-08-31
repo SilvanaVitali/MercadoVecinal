@@ -13,7 +13,7 @@ async function verifyEmail(req, res, next){
 function verifyToken(req, res, next) {
     const { authorization } = req.headers;
     if(!authorization) {
-        return res.status(403).send('Un token es requerido para la autorización')
+        return res.status(403).json({ error: 'Un token es requerido para la autorización'})
     };
 
     let decoded;
@@ -22,17 +22,17 @@ function verifyToken(req, res, next) {
         console.log(decoded);
     } catch (error) {
         console.log('error en la decodificacion', error);
-        res.status(400).json(error);
+        res.status(400).json({ error: 'Un token es requerido para la autorización'});
     }
-    //2. Verificamos que el token aún no ha expirado
+    //Verificamos que el token aún no ha expirado
     const now = (new Date() / 1000)
     if (now > decoded.exp) {
         console.log({now}, {exp: decoded.exp});
-        res.status(401).json({ err: 'Tu token expiró' });
+        res.status(401).json({ error: 'Tu token expiró' });
     }
-    //3. Guardamos el usuario en el objeto request
+    //Guardamos el usuario en el objeto request
     req.data = decoded.data;
-    //3. Si está todo ok, procedemos con el camino tradicional
+
     next();
 };
 

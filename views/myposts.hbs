@@ -17,31 +17,7 @@
             <th scope="col">Editar</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <th scope="row">15000</th>
-                <td class="w-25">
-                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-3.jpg" class="img-fluid img-thumbnail" alt="Sheep">
-                </td>
-                <td>Bicicleta Usada</td>
-                <td>1</td>
-                <td>1</td>
-                <td>0</td>
-                <td>$55000</td>
-                <td><button type="button" class="btn btn-primary">Editar</button></td>
-            </tr>
-            <tr>
-                <th scope="row">15000</th>
-                <td class="w-25">
-                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-3.jpg" class="img-fluid img-thumbnail" alt="Sheep">
-                </td>
-                <td>Bicicleta Usada</td>
-                <td>1</td>
-                <td>1</td>
-                <td>0</td>
-                <td>$55000</td>
-                <td><button type="button" class="btn btn-primary">Editar</button></td>
-            </tr>
+        <tbody id="tbody">
         </tbody>
         </table>    
     </div>    
@@ -50,5 +26,60 @@
 
 
 <script>
-    //TODO Lista con filtro
+    const table = document.querySelector('#tbody');
+    const token = localStorage.getItem('token');
+
+    async function getProducts () {
+      try {
+        const dataToken = await axios.get('/api/users/my', { 
+        headers: { 
+            authorization: token 
+            } 
+        });
+
+        console.log(dataToken.data) 
+        const sellerID = dataToken.data.id;
+
+        const { data } = await axios.get('/api/posts/myPosts', 
+       {
+            params: {
+            sellerID
+            }
+        });
+        let contentStr = '';
+        for (let product of data) {
+          let img;
+          if(product.photo) {
+              img = '/fotos/' + product.photo
+          } else {
+              img = '/fotos/default.png'
+          }
+          contentStr += `
+            <tr>
+                <th scope="row">${product.postID}</th>
+                <td class="w-25">
+                    <img src="${img}" class="img-fluid img-thumbnail" alt="${product.product}">
+                </td>
+                <td>${product.product}</td>
+                <td>${product.initialStock}</td>
+                <td>${product.availableStock}</td>
+                <td>Cantidad reservada</td>
+                <td>${product.price}</td>
+                <td><a href="#" class="btn bg-primary text-light" name="${product.postID}" onclick="edit()">Editar</a></td>
+            </tr>
+          `
+        }
+        table.innerHTML = contentStr;
+      } catch (error) {
+        console.log(error.response.data.error)
+        toastr.error(error.response.data.error, "Error de inicio session:");
+      }
+    }
+
+    async function edit(){
+      let id = event.target.name;
+      window.location.href = `/editpost/search?id=${id}`
+    }
+
+    getProducts();
 </script>

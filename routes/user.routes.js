@@ -7,7 +7,6 @@ router.post('/signup', verifyEmail, signup);
 
 router.post('/login', login);
 
-//Ruta que está protegida por nuestro middleware llamaro auth_required
 router.get('/my', verifyToken, mySession);
 
 module.exports = router;

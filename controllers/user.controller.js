@@ -22,7 +22,7 @@ const login = async (req, res) => {
         return res.status(404).json({ error: 'Contraseña incorrecta' });
     }
 
-    //3.1 Calculo 1 hr más
+    //3.1 Calculo 1 día más
     const one_day = Math.floor(new Date() / 1000) + 3600*24;
 
     //4. Creo el token
@@ -88,11 +88,7 @@ const signup = async (req, res) => {
 //Para devolver info del token
 const mySession = async (req, res) => {
     const data = req.data
-    console.log(data); //TODO eliminar
     res.json(data);
 };
-
-//TODO
-// findUserById?
 
 module.exports = { login, signup, mySession };
