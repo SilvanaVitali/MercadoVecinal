@@ -77,8 +77,8 @@
             toastr.success("Producto agregado con exito!");
             form.reset();
             } catch(error) {
-                console.log(error);
-                toastr.error(error);
+                console.log(error.response.data.error);
+                toastr.error(error.response.data.error, "Error:");
                 return
             };
         });
